@@ -1,14 +1,329 @@
 <!-- Copyright (c) 2026, Oracle and/or its affiliates -->
 
+<style>
+  /* ══════════════════════════════════════════
+     ORACLE ASSISTANT — CHAT WIDGET STYLES
+  ══════════════════════════════════════════ */
+
+  /* ── Floating Action Button ── */
+  .oa-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #C74634;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(199, 70, 52, 0.45);
+    z-index: 9000;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+  }
+  .oa-fab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 22px rgba(199, 70, 52, 0.55);
+  }
+  .oa-fab:active { transform: scale(0.96); }
+  .oa-fab svg { width: 26px; height: 26px; fill: white; display: block; }
+
+  /* ── Chat Window ── */
+  .oa-chat-window {
+    position: fixed;
+    bottom: 90px;
+    right: 16px;
+    width: 318px;
+    height: 470px;
+    background: #f5f5f5;
+    border-radius: 14px;
+    box-shadow: 0 12px 44px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    z-index: 8999;
+    overflow: hidden;
+    animation: oaChatSlideIn 0.22s cubic-bezier(0.34, 1.25, 0.64, 1);
+  }
+  @keyframes oaChatSlideIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.93); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+
+  /* ── Header ── */
+  .oa-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 14px 12px;
+    background: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+    flex-shrink: 0;
+  }
+  .oa-header-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #1c1c1c;
+    letter-spacing: 0.1px;
+  }
+  .oa-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .oa-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 5px;
+    color: #6b6b6b;
+    border-radius: 6px;
+    line-height: 0;
+    transition: background 0.12s, color 0.12s;
+    outline: none;
+  }
+  .oa-icon-btn:hover { background: #f0f0f0; color: #1c1c1c; }
+  .oa-icon-btn svg { width: 18px; height: 18px; display: block; }
+
+  /* ── Messages Scroll Area ── */
+  .oa-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px 8px;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+  }
+  .oa-messages::-webkit-scrollbar { width: 4px; }
+  .oa-messages::-webkit-scrollbar-track { background: transparent; }
+  .oa-messages::-webkit-scrollbar-thumb { background: #c8c8c8; border-radius: 2px; }
+
+  /* ── Date / Time separator ── */
+  .oa-date-sep {
+    text-align: center;
+    font-size: 11px;
+    color: #999;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    margin: 0 0 12px;
+    line-height: 1.4;
+  }
+
+  /* ── Message rows ── */
+  .oa-msg-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  .oa-msg-row.bot  { align-items: flex-start; }
+  .oa-msg-row.user { align-items: flex-end; }
+
+  /* ── Bubbles ── */
+  .oa-bubble {
+    font-size: 13.5px;
+    line-height: 1.52;
+    word-wrap: break-word;
+    max-width: 87%;
+  }
+  .oa-bubble.bot {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    border-radius: 12px 12px 12px 3px;
+    padding: 10px 13px;
+    color: #1c1c1c;
+  }
+  .oa-bubble.user {
+    background: #e2e2e2;
+    border-radius: 16px 16px 3px 16px;
+    padding: 7px 14px;
+    color: #1c1c1c;
+    font-size: 13px;
+  }
+
+  /* ── Timestamp ── */
+  .oa-msg-time {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 4px;
+    padding: 0 3px;
+    line-height: 1.4;
+  }
+
+  /* ── Input bar ── */
+  .oa-input-bar {
+    display: flex;
+    align-items: center;
+    padding: 9px 10px 9px 12px;
+    background: #ffffff;
+    border-top: 1px solid #e6e6e6;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .oa-msg-input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 22px;
+    padding: 8px 14px;
+    font-size: 13px;
+    outline: none;
+    background: #f7f7f7;
+    color: #1c1c1c;
+    font-family: inherit;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .oa-msg-input:focus {
+    border-color: #C74634;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(199,70,52,0.12);
+  }
+  .oa-msg-input::placeholder { color: #b2b2b2; }
+
+  .oa-send-btn, .oa-mic-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: #9a9a9a;
+    border-radius: 50%;
+    line-height: 0;
+    flex-shrink: 0;
+    transition: color 0.12s, background 0.12s;
+    outline: none;
+  }
+  .oa-send-btn:hover { color: #C74634; background: rgba(199,70,52,0.08); }
+  .oa-mic-btn:hover  { color: #555;    background: #f0f0f0; }
+  .oa-send-btn svg, .oa-mic-btn svg { width: 20px; height: 20px; display: block; }
+</style>
+
+<!-- ─────────────────────────────────────────────
+     Page content
+────────────────────────────────────────────── -->
 <div class="oj-sp-public-primary-content-container oj-sm-padding-2x">
-<div class="oj-flex">
-  <h1 class="oj-flex-item oj-sm-12 oj-md-12"><oj-bind-text value="[[ $application.translations.appBundle.sample_page_title ]]"></oj-bind-text></h1>
-</div>
-<div class="oj-flex">
-  <div class="oj-flex-item oj-sm-12 oj-md-12">
-    <oj-bind-text
-      value="[[ $application.translations.appBundle.sample_page_description ]]"
-    ></oj-bind-text>
+  <div class="oj-flex">
+    <h1 class="oj-flex-item oj-sm-12 oj-md-12">
+      <oj-bind-text value="[[ $application.translations.appBundle.sample_page_title ]]"></oj-bind-text>
+    </h1>
+  </div>
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-12 oj-md-12">
+      <oj-bind-text value="[[ $application.translations.appBundle.sample_page_description ]]"></oj-bind-text>
+    </div>
   </div>
 </div>
-</div>
+
+<!-- ─────────────────────────────────────────────
+     Floating Chat Button
+────────────────────────────────────────────── -->
+<button class="oa-fab" on-click="[[$listeners.toggleChat]]" aria-label="Open Oracle Assistant">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+  </svg>
+</button>
+
+<!-- ─────────────────────────────────────────────
+     Chat Window
+────────────────────────────────────────────── -->
+<oj-bind-if test="[[$variables.chatOpen]]">
+  <div class="oa-chat-window" id="oaChatWindow">
+
+    <!-- Header -->
+    <div class="oa-header">
+      <span class="oa-header-title">Oracle Assistant</span>
+      <div class="oa-header-actions">
+
+        <!-- Mute / Unmute -->
+        <button class="oa-icon-btn" on-click="[[$listeners.toggleMute]]" aria-label="Toggle mute">
+          <oj-bind-if test="[[$variables.isMuted]]">
+            <!-- Volume Off -->
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+            </svg>
+          </oj-bind-if>
+          <oj-bind-if test="[[ !$variables.isMuted ]]">
+            <!-- Volume On -->
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5zm7-2L9.91 9H7v6h2.91L12 17.14V7z"/>
+            </svg>
+          </oj-bind-if>
+        </button>
+
+        <!-- Minimize -->
+        <button class="oa-icon-btn" on-click="[[$listeners.toggleChat]]" aria-label="Minimize">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 13H5v-2h14v2z"/>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Messages area -->
+    <div class="oa-messages" id="oaMessagesArea">
+
+      <!-- Date separator -->
+      <div class="oa-date-sep">
+        <oj-bind-text value="[[$variables.chatDateLabel]]"></oj-bind-text>
+      </div>
+
+      <!-- Message list -->
+      <oj-bind-for-each data="[[$variables.chatMessages]]">
+        <template>
+
+          <!-- Bot message -->
+          <oj-bind-if test="[[$current.data.sender === 'bot']]">
+            <div class="oa-msg-row bot">
+              <div class="oa-bubble bot">
+                <oj-bind-text value="[[$current.data.text]]"></oj-bind-text>
+              </div>
+              <span class="oa-msg-time">
+                <oj-bind-text value="[[$current.data.time]]"></oj-bind-text>
+              </span>
+            </div>
+          </oj-bind-if>
+
+          <!-- User message -->
+          <oj-bind-if test="[[$current.data.sender === 'user']]">
+            <div class="oa-msg-row user">
+              <div class="oa-bubble user">
+                <oj-bind-text value="[[$current.data.text]]"></oj-bind-text>
+              </div>
+              <span class="oa-msg-time">
+                <oj-bind-text value="[[$current.data.time]]"></oj-bind-text>
+              </span>
+            </div>
+          </oj-bind-if>
+
+        </template>
+      </oj-bind-for-each>
+
+    </div>
+
+    <!-- Input bar -->
+    <div class="oa-input-bar">
+      <input
+        id="oaChatInput"
+        class="oa-msg-input"
+        type="text"
+        placeholder="Type a message"
+        on-keydown="[[$listeners.handleKeyDown]]"
+        aria-label="Type a message"
+        autocomplete="off"
+      />
+      <button class="oa-send-btn" on-click="[[$listeners.sendMessage]]" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+      <button class="oa-mic-btn" aria-label="Voice input">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+</oj-bind-if>
