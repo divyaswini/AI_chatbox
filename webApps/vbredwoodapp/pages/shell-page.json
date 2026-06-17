@@ -14,29 +14,6 @@
       },
       "messageId": {
         "type": "string"
-      },
-      "chatOpen": {
-        "type": "boolean",
-        "defaultValue": false
-      },
-      "chatMessages": {
-        "type": "ChatMessage[]",
-        "defaultValue": [
-          {
-            "id": "welcome",
-            "text": "Hello, I'm Oracle Assistant. What are your questions about Oracle Integration?",
-            "sender": "bot",
-            "time": "Just now"
-          }
-        ]
-      },
-      "chatDateLabel": {
-        "type": "string",
-        "defaultValue": "TODAY"
-      },
-      "isMuted": {
-        "type": "boolean",
-        "defaultValue": false
       }
     },
     "metadata": {},
@@ -48,12 +25,6 @@
         "primaryActionLabel": "string",
         "secondaryText": "any",
         "secondaryActionLabel": "string"
-      },
-      "ChatMessage": {
-        "id": "string",
-        "text": "string",
-        "sender": "string",
-        "time": "string"
       }
     },
     "eventListeners": {
@@ -84,37 +55,6 @@
               "event": "{{ $event }}"
             },
             "chain": "showNotificationMessage"
-          }
-        ]
-      },
-      "toggleChat": {
-        "chains": [
-          {
-            "chain": "toggleChat"
-          }
-        ]
-      },
-      "toggleMute": {
-        "chains": [
-          {
-            "chain": "toggleMute"
-          }
-        ]
-      },
-      "sendMessage": {
-        "chains": [
-          {
-            "chain": "sendMessage"
-          }
-        ]
-      },
-      "handleKeyDown": {
-        "chains": [
-          {
-            "parameters": {
-              "event": "{{ $event }}"
-            },
-            "chain": "handleKeyDown"
           }
         ]
       }

@@ -1,7 +1,12 @@
 {
-
   "id": "main",
   "description": "Flow main",
+  "defaultPage": "main-start",
+  "pages": {
+    "main-start": {
+      "id": "main-start"
+    }
+  },
   "chains": {},
   "services": {},
   "types": {},
