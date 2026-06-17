@@ -14,6 +14,29 @@
       },
       "messageId": {
         "type": "string"
+      },
+      "chatOpen": {
+        "type": "boolean",
+        "defaultValue": false
+      },
+      "chatMessages": {
+        "type": "ChatMessage[]",
+        "defaultValue": [
+          {
+            "id": "welcome",
+            "text": "Hello, I'm Oracle Assistant. What are your questions about Oracle Integration?",
+            "sender": "bot",
+            "time": "Just now"
+          }
+        ]
+      },
+      "chatDateLabel": {
+        "type": "string",
+        "defaultValue": "TODAY"
+      },
+      "isMuted": {
+        "type": "boolean",
+        "defaultValue": false
       }
     },
     "metadata": {},
@@ -25,49 +48,86 @@
         "primaryActionLabel": "string",
         "secondaryText": "any",
         "secondaryActionLabel": "string"
+      },
+      "ChatMessage": {
+        "id": "string",
+        "text": "string",
+        "sender": "string",
+        "time": "string"
       }
     },
     "eventListeners": {
-    "application:spShowToast": {
-      "chains": [
-        {
-          "parameters": {
-            "event": "{{ $event }}"
-          },
-          "chain": "showMessageToast"
-        }
-      ]
-    },
-    "messagesBannerSpClose": {
-      "chains": [
-        {
-          "parameters": {
-            "event": "{{ $event }}"
-          },
-          "chain": "closeMessageBanner"
-        }
-      ]
-    },
-    "vbNotification": {
-      "chains": [
-        {
-          "parameters": {
-            "event": "{{ $event }}"
-          },
-          "chain": "showNotificationMessage"
-        }
-      ]
-    }
+      "application:spShowToast": {
+        "chains": [
+          {
+            "parameters": {
+              "event": "{{ $event }}"
+            },
+            "chain": "showMessageToast"
+          }
+        ]
+      },
+      "messagesBannerSpClose": {
+        "chains": [
+          {
+            "parameters": {
+              "event": "{{ $event }}"
+            },
+            "chain": "closeMessageBanner"
+          }
+        ]
+      },
+      "vbNotification": {
+        "chains": [
+          {
+            "parameters": {
+              "event": "{{ $event }}"
+            },
+            "chain": "showNotificationMessage"
+          }
+        ]
+      },
+      "toggleChat": {
+        "chains": [
+          {
+            "chain": "toggleChat"
+          }
+        ]
+      },
+      "toggleMute": {
+        "chains": [
+          {
+            "chain": "toggleMute"
+          }
+        ]
+      },
+      "sendMessage": {
+        "chains": [
+          {
+            "chain": "sendMessage"
+          }
+        ]
+      },
+      "handleKeyDown": {
+        "chains": [
+          {
+            "parameters": {
+              "event": "{{ $event }}"
+            },
+            "chain": "handleKeyDown"
+          }
+        ]
+      }
     },
     "imports": {
-    "components": {
-      "oj-sp-messages-banner": {
-        "path": "oj-sp/messages-banner/loader"
-      },
-      "oj-sp-messages-toast": {
-        "path": "oj-sp/messages-toast/loader"
+      "components": {
+        "oj-sp-messages-banner": {
+          "path": "oj-sp/messages-banner/loader"
+        },
+        "oj-sp-messages-toast": {
+          "path": "oj-sp/messages-toast/loader"
+        }
       }
-    }
     },
     "translations": {}
   }

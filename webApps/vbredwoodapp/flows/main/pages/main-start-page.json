@@ -1,25 +1,11 @@
 {
+
   "title": "",
   "description": "",
   "variables": {},
   "metadata": {},
   "types": {},
   "chains": {},
-  "eventListeners": {
-    "vbEnter": {
-      "chains": [
-        {
-          "chain": "initChat"
-        }
-      ]
-    },
-    "vbExit": {
-      "chains": [
-        {
-          "chain": "destroyChat"
-        }
-      ]
-    }
-  },
+  "eventListeners": {},
   "imports": {}
 }
